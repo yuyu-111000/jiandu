@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>法律案例类出土简牍数据库平台｜UI 设计初稿</title>
+  <style>
+    :root{
+      --bg:#f5f1e8;
+      --surface:#fffdf8;
+      --surface-2:#fbf7ef;
+      --ink:#201b16;
+      --muted:#72685e;
+      --line:#e1d8ca;
+      --line-strong:#c8b7a0;
+      --accent:#8a5a2f;
+      --accent-2:#6f7f52;
+      --seal:#9b2f24;
+      --blue:#445b78;
+      --shadow:0 10px 30px rgba(73,55,35,.10);
+      --radius:18px;
+      --radius-sm:10px;
+      --sidebar:260px;
+      --topbar:70px;
+      --font:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      --mono:"SFMono-Regular","Consolas","Liberation Mono",monospace;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 15% 5%, rgba(138,90,47,.10), transparent 28%),
+        radial-gradient(circle at 95% 25%, rgba(111,127,82,.10), transparent 25%),
+        var(--bg);
+      line-height:1.5;
+    }
+    a{color:inherit;text-decoration:none}
+    .layout{display:grid;grid-template-columns:var(--sidebar) minmax(900px,1fr);min-height:100vh}
+    .side{
+      position:sticky;top:0;height:100vh;padding:28px 22px;background:rgba(255,253,248,.72);
+      backdrop-filter:blur(16px);border-right:1px solid var(--line);overflow:auto;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:26px}
+    .brand-mark{
+      width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#b88956);
+      display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow);font-family:var(--mono)
+    }
+    .brand h1{font-size:17px;margin:0;line-height:1.25;letter-spacing:.02em}
+    .brand p{font-size:12px;margin:4px 0 0;color:var(--muted)}
+    .side-section{margin:22px 0 10px;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+    .nav{display:flex;flex-direction:column;gap:6px}
+    .nav a{padding:10px 12px;border-radius:12px;color:#3a3129;font-size:14px;border:1px solid transparent}
+    .nav a:hover{background:#f1e7d8;border-color:var(--line)}
+    .meta-card{margin-top:24px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);font-size:12px;color:var(--muted)}
+    .main{padding:34px 38px 70px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch;margin-bottom:28px}
+    .card{background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-main{padding:32px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--accent);font-weight:700;margin-bottom:12px}
+    .eyebrow::before{content:"";width:18px;height:2px;background:var(--accent);display:block}
+    h2{font-size:32px;margin:0 0 12px;letter-spacing:.02em;line-height:1.2}
+    .hero-main p{color:var(--muted);max-width:720px;margin:0 0 20px}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;color:#3b3127}
+    .btn.primary{background:var(--ink);color:white;border-color:var(--ink)}
+    .hero-side{padding:24px;display:grid;gap:12px}
+    .kpi{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;background:#f9f3e8;border:1px solid var(--line)}
+    .kpi span:first-child{color:var(--muted);font-size:13px}.kpi strong{font-size:22px}
+    .section{margin:30px 0 0}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;gap:20px}
+    .section h3{font-size:24px;margin:0}.section-desc{font-size:13px;color:var(--muted);margin-top:6px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .tile{padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+    .tile h4{margin:0 0 8px;font-size:16px}.tile p{margin:0;color:var(--muted);font-size:13px}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;border:1px solid var(--line);background:#f7efe2;color:var(--accent);font-size:12px;font-weight:700;padding:4px 9px;margin-bottom:10px}
+    .screen{margin:28px 0 44px;padding:24px;background:rgba(255,253,248,.9);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+    .screen-title{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:18px}
+    .screen-title h3{font-size:22px;margin:0 0 5px}.screen-title p{margin:0;color:var(--muted);font-size:13px}.tag{font-size:12px;color:white;background:var(--accent);padding:5px 10px;border-radius:999px;font-weight:700;white-space:nowrap}
+    .mock-browser{border:1px solid #d6cab8;border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:0 6px 18px rgba(73,55,35,.08)}
+    .mock-top{height:52px;background:#f0e8db;border-bottom:1px solid #d6cab8;display:flex;align-items:center;gap:10px;padding:0 16px}
+    .dot{width:10px;height:10px;border-radius:50%;background:#c1b5a6}.mock-url{height:28px;flex:1;background:rgba(255,255,255,.68);border:1px solid #ded1bf;border-radius:999px;color:#84796b;font-size:12px;display:flex;align-items:center;padding-left:14px}
+    .mock-body{min-height:520px;display:flex;background:var(--surface)}
+    .app-side{width:210px;background:#f7efe2;border-right:1px solid var(--line);padding:18px}
+    .app-side .app-logo{font-weight:900;margin-bottom:18px}.app-menu{display:grid;gap:6px}.app-menu div{padding:9px 10px;border-radius:10px;font-size:13px;color:#4b3c30}.app-menu .active{background:var(--ink);color:#fff}
+    .app-content{flex:1;padding:20px;background:#fffdf8;min-width:0}
+    .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}.searchbar{flex:1;min-width:260px;height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 14px;display:flex;align-items:center;color:#918576;font-size:13px}
+    .chip{border:1px solid var(--line);background:#f9f4eb;border-radius:999px;padding:8px 11px;font-size:12px;color:#4c4137}.chip.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}.mini-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}.mini-card .num{font-size:24px;font-weight:900}.mini-card .label{font-size:12px;color:var(--muted)}
+    .list{display:grid;gap:10px}.result{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;display:grid;gap:8px}.result h5{margin:0;font-size:15px}.result p{margin:0;color:#5f554c;font-size:13px}.mark{background:#f4d9a6;border-bottom:2px solid #c0832f;padding:0 2px;border-radius:3px}.source{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}.source span{background:#f3eadc;border-radius:999px;padding:3px 8px}
+    .reader{display:grid;grid-template-columns:190px 1fr 1fr;min-height:560px}.catalog{background:#f7efe2;border-right:1px solid var(--line);padding:16px;overflow:hidden}.cat-title{font-size:13px;font-weight:900;margin-bottom:12px}.cat-item{font-size:12px;padding:8px 9px;border-radius:9px;color:#4d443b;margin-bottom:5px}.cat-item.on{background:#fff;border:1px solid var(--line);font-weight:700;color:var(--accent)}.text-panel,.image-panel{padding:18px;min-width:0}.text-panel{border-right:1px solid var(--line)}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px}.panel-head h4{margin:0;font-size:15px}.tools{display:flex;gap:6px;flex-wrap:wrap}.tool{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#5d5044;background:#fff}.text-box{font-size:18px;line-height:2.1;border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;min-height:410px;writing-mode:horizontal-tb}.pos-n{background:#e7efe0;border-bottom:2px solid var(--accent-2);padding:1px 3px;border-radius:4px}.pos-v{background:#f3e2d5;border-bottom:2px solid var(--accent);padding:1px 3px;border-radius:4px}.role-s{outline:2px solid rgba(155,47,36,.25);border-radius:4px}.img-placeholder{height:410px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#e6dccb,#fbf7ef);display:grid;place-items:center;position:relative;overflow:hidden}.slip{width:120px;height:340px;border-radius:18px;background:linear-gradient(90deg,#8c623a,#b8834d 40%,#744926);box-shadow:18px 20px 30px rgba(91,61,35,.24);position:relative}.slip::before,.slip::after{content:"";position:absolute;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,.24)}.slip::before{left:36px}.slip::after{right:36px}.script{position:absolute;inset:30px 38px;writing-mode:vertical-rl;color:#23180e;font-size:20px;letter-spacing:.2em;font-family:serif}.zoom-bar{position:absolute;right:14px;bottom:14px;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;color:var(--muted)}
+    .search-layout{display:grid;grid-template-columns:240px 1fr;gap:16px}.filter{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbf7ef}.filter h5{margin:0 0 10px}.check{display:flex;gap:8px;align-items:center;font-size:13px;margin:9px 0;color:#4b4036}.fake-check{width:14px;height:14px;border:1px solid #c6b8a6;border-radius:4px;background:#fff}.fake-check.on{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 3px #fff}.chart{height:160px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;display:flex;align-items:end;gap:14px}.bar{width:34px;background:linear-gradient(180deg,#b88956,#8a5a2f);border-radius:8px 8px 0 0}.bar:nth-child(2){height:100px}.bar:nth-child(3){height:130px}.bar:nth-child(4){height:75px}.bar:nth-child(5){height:115px}.bar:nth-child(6){height:55px}.bar-labels{display:flex;gap:13px;font-size:11px;color:var(--muted);margin-top:6px}.bar-labels span{width:34px;text-align:center}
+    .builder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.select-like{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#50463d;font-size:13px}.syntax-result{display:grid;grid-template-columns:1fr 1fr;gap:12px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.legend span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:#fff}
+    .admin{display:grid;grid-template-columns:230px 1fr;gap:16px}.form-card,.table-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.field{margin-bottom:11px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.input{height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 10px;color:#8a7f72;font-size:13px}.textarea{height:92px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;color:#8a7f72;font-size:13px}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}.table th{color:#6c6258;background:#fbf7ef}.status{font-size:12px;border-radius:999px;padding:3px 8px;background:#e8f0e1;color:#4e6842;font-weight:700}.status.warn{background:#f8eadc;color:#8a5a2f}
+    .ai-layout{display:grid;grid-template-columns:1fr 300px;gap:16px}.chat{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;min-height:360px}.msg{max-width:76%;padding:12px 14px;border-radius:14px;margin-bottom:12px;font-size:13px}.msg.user{margin-left:auto;background:var(--ink);color:#fff}.msg.ai{background:#f5ede0;border:1px solid var(--line)}.quote-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px;margin-bottom:10px}.quote-card h5{margin:0 0 6px}.quote-card p{margin:0;color:var(--muted);font-size:12px}.note{padding:12px 14px;border-left:4px solid var(--accent);background:#f9f2e8;color:#554a40;border-radius:0 12px 12px 0;font-size:13px}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.flow-step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative}.flow-step h4{margin:0 0 7px;font-size:14px}.flow-step p{margin:0;color:var(--muted);font-size:12px}.flow-step:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:42%;font-weight:900;color:var(--accent)}
+    .footer{padding:24px 0;color:var(--muted);font-size:12px;text-align:center}
+    @media (max-width:1100px){.layout{display:block}.side{position:relative;width:auto;height:auto}.main{padding:24px 18px}.hero{grid-template-columns:1fr}.grid-3,.grid-2,.cards{grid-template-columns:1fr}.reader,.search-layout,.admin,.ai-layout{grid-template-columns:1fr}.catalog,.text-panel{border-right:none;border-bottom:1px solid var(--line)}.flow{grid-template-columns:1fr}.flow-step::after{display:none}.mock-body{display:block}.app-side{width:auto}.builder{grid-template-columns:1fr 1fr}.syntax-result{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-mark">簡</div>
+        <div>
+          <h1>出土简牍数据库<br/>UI 设计初稿</h1>
+          <p>第二阶段：UI 设计 / 前端体验基线</p>
+        </div>
+      </div>
+      <div class="side-section">Navigation</div>
+      <nav class="nav">
+        <a href="#overview">设计定位</a>
+        <a href="#ia">信息架构</a>
+        <a href="#screen-home">首页 / 资料总览</a>
+        <a href="#screen-reader">图文对照阅读</a>
+        <a href="#screen-search">检索与统计</a>
+        <a href="#screen-annotation">标注检索</a>
+        <a href="#screen-admin">后台上传维护</a>
+        <a href="#screen-ai">AI 分析问答</a>
+        <a href="#components">组件规范</a>
+      </nav>
+      <div class="meta-card">
+        <b>设计原则</b><br/>
+        学术感、可读性、检索效率优先。视觉上使用纸本底色、墨色文本、竹木色强调色，避免娱乐化界面。
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero card" id="overview">
+        <div class="hero-main">
+          <div class="eyebrow">UI Direction</div>
+          <h2>法律案例类出土简牍数据库平台</h2>
+          <p>本版 UI 以“研究型数据库”为定位：先保证图文对照、全文检索、条件筛选、标注高亮、后台上传维护等核心任务的可用性，再为统计图表和 AI 分析保留扩展区。</p>
+          <div class="btn-row">
+            <a class="btn primary" href="#screen-reader">查看核心阅读页</a>
+            <a class="btn" href="#screen-search">查看检索页</a>
+            <a class="btn" href="#screen-admin">查看后台页</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="kpi"><span>首版页面</span><strong>6</strong></div>
+          <div class="kpi"><span>P0 核心任务</span><strong>4</strong></div>
+          <div class="kpi"><span>视觉基调</span><strong>纸本 / 墨色</strong></div>
+          <div class="kpi"><span>布局策略</span><strong>左右分栏</strong></div>
+        </div>
+      </section>
+
+      <section class="section" id="ia">
+        <div class="section-head">
+          <div>
+            <h3>一、信息架构</h3>
+            <div class="section-desc">前台围绕“查、读、看、统计、问答”，后台围绕“传、改、管、校对”。</div>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="tile"><span class="badge">前台 P0</span><h4>资料浏览</h4><p>目录、来源、时期、地点、案例类型；进入图文对照详情页。</p></div>
+          <div class="tile"><span class="badge">前台 P0</span><h4>检索中心</h4><p>关键词、条件筛选、命中数量、出处定位、检索结果列表。</p></div>
+          <div class="tile"><span class="badge">前台 P1</span><h4>标注与统计</h4><p>词性、主宾语、句法结构、指称对象检索；图表统计。</p></div>
+          <div class="tile"><span class="badge">后台 P0</span><h4>资料管理</h4><p>文本、图片、目录、页码、简牍编号、基础元数据维护。</p></div>
+          <div class="tile"><span class="badge">后台 P1</span><h4>标注管理</h4><p>语法标注版、指称标注版上传、校对、编辑和批量导入。</p></div>
+          <div class="tile"><span class="badge">扩展 P2</span><h4>AI 分析</h4><p>基于数据库检索结果回答，并展示简牍编号、文献来源和页码。</p></div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-home">
+        <div class="screen-title">
+          <div><h3>二、首页 / 资料总览</h3><p>用于快速进入检索、浏览最新入库资料，并查看基础统计。</p></div>
+          <span class="tag">P0</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/dashboard</div></div>
+          <div class="mock-body">
+            <aside class="app-side">
+              <div class="app-logo">法律简牍数据库</div>
+              <div class="app-menu">
+                <div class="active">资料总览</div><div>图文阅读</div><div>全文检索</div><div>标注统计</div><div>AI 分析</div><div>后台管理</div>
+              </div>
+            </aside>
+            <div class="app-content">
+              <div class="toolbar"><div class="searchbar">输入关键词 / 简牍编号 / 文献来源</div><span class="chip dark">检索</span><span class="chip">高级筛选</span></div>
+              <div class="cards"><div class="mini-card"><div class="num">1,286</div><div class="label">简牍条目</div></div><div class="mini-card"><div class="num">42</div><div class="label">文献来源</div></div><div class="mini-card"><div class="num">318</div><div class="label">标注现象</div></div></div>
+              <div class="grid-2">
+                <div class="result"><h5>按出土地点浏览</h5><p>睡虎地秦简、张家山汉简、岳麓秦简、里耶秦简……</p><div class="source"><span>多选筛选</span><span>数量统计</span></div></div>
+                <div class="result"><h5>按时期浏览</h5><p>战国、秦、汉等时期分类，支持与地点、来源组合筛选。</p><div class="source"><span>时期字典</span><span>目录联动</span></div></div>
+              </div>
+              <div class="section-desc" style="margin-top:14px;">建议首页不堆过多正文，重点放检索入口、分类入口、最近更新和统计概览。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-reader">
+        <div class="screen-title">
+          <div><h3>三、图文对照阅读页</h3><p>平台最核心页面。必须同时解决目录跳转、文字复制、图片缩放、翻页、标注高亮。</p></div>
+          <span class="tag">P0 核心</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/reader/source/001/page/12</div></div>
+          <div class="reader">
+            <aside class="catalog">
+              <div class="cat-title">目录</div>
+              <div class="cat-item">卷一：法律案例材料</div>
+              <div class="cat-item on">第十二页 / 简 025</div>
+              <div class="cat-item">第十三页 / 简 026</div>
+              <div class="cat-item">第十四页 / 简 027</div>
+              <div class="cat-item">附录：释文说明</div>
+            </aside>
+            <section class="text-panel">
+              <div class="panel-head"><h4>简 025 释文</h4><div class="tools"><span class="tool">复制</span><span class="tool">仅文字</span><span class="tool">标注开关</span></div></div>
+              <div class="text-box">
+                <span class="pos-n role-s">某甲</span> <span class="pos-v">盗</span> <span class="pos-n">牛</span>，吏捕得之。<br/>
+                令史案验，其辞与证相合。<br/>
+                当以律论，具书其狱。<br/><br/>
+                <span style="font-size:13px;color:#766b5f;">高亮示例：名词为绿色底，动词为棕色底，主语加浅红外框。实际颜色可按标注类型配置。</span>
+              </div>
+              <div class="legend"><span>名词 n</span><span>动词 v</span><span>主语 subject</span><span>宾语 object</span></div>
+            </section>
+            <section class="image-panel">
+              <div class="panel-head"><h4>原图 / 页码 12</h4><div class="tools"><span class="tool">上一页</span><span class="tool">下一页</span><span class="tool">放大</span></div></div>
+              <div class="img-placeholder"><div class="slip"><div class="script">某甲盗牛吏捕得之</div></div><div class="zoom-bar">100% · 拖拽 / 缩放</div></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-search">
+        <div class="screen-title">
+          <div><h3>四、检索与统计页</h3><p>关键词检索 + 出土地点/时期/来源筛选 + 命中数量 + 图表统计。</p></div>
+          <span class="tag">P0 / P1</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/search?q=盗</div></div>
+          <div class="app-content">
+            <div class="toolbar"><div class="searchbar">盗</div><span class="chip dark">全文检索</span><span class="chip">重置</span></div>
+            <div class="search-layout">
+              <aside class="filter">
+                <h5>筛选条件</h5>
+                <div class="check"><span class="fake-check on"></span>睡虎地秦简</div>
+                <div class="check"><span class="fake-check"></span>张家山汉简</div>
+                <div class="check"><span class="fake-check on"></span>秦</div>
+                <div class="check"><span class="fake-check"></span>汉</div>
+                <div class="check"><span class="fake-check"></span>法律案例</div>
+              </aside>
+              <main>
+                <div class="cards"><div class="mini-card"><div class="num">37</div><div class="label">命中条目</div></div><div class="mini-card"><div class="num">4</div><div class="label">文献来源</div></div><div class="mini-card"><div class="num">2</div><div class="label">出土地点</div></div></div>
+                <div class="grid-2" style="margin-bottom:12px;">
+                  <div><div class="chart"><div class="bar" style="height:80px"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="bar-labels"><span>睡虎地</span><span>张家山</span><span>里耶</span><span>岳麓</span><span>其他</span><span>未定</span></div></div>
+                  <div class="note">统计图表应与当前检索条件实时联动。点击图表项后，可进一步缩小结果集。</div>
+                </div>
+                <div class="list">
+                  <div class="result"><h5>简 025：盗牛案</h5><p><span class="mark">盗</span>牛，吏捕得之。令史案验，其辞与证相合。</p><div class="source"><span>睡虎地秦简</span><span>页 12</span><span>秦</span></div></div>
+                  <div class="result"><h5>简 041：盗物案</h5><p>某里人有<span class="mark">盗</span>，辞不服，复讯之。</p><div class="source"><span>张家山汉简</span><span>页 31</span><span>汉</span></div></div>
+                </div>
+              </main>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-annotation">
+        <div class="screen-title">
+          <div><h3>五、标注检索页</h3><p>面向 n+v、v+n、主语、宾语、指称对象等标注检索。适合第二阶段后半段或第三阶段完善。</p></div>
+          <span class="tag">P1</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/annotation-search</div></div>
+          <div class="app-content">
+            <div class="builder">
+              <div class="select-like">结构模式 <b>n + v</b></div>
+              <div class="select-like">语法角色 <b>主语</b></div>
+              <div class="select-like">出土地点 <b>全部</b></div>
+              <div class="select-like">时期 <b>秦 / 汉</b></div>
+            </div>
+            <div class="syntax-result">
+              <div class="result"><h5>命中 18 条 n + v 结构</h5><p><span class="pos-n">某甲</span> <span class="pos-v">盗</span> 牛；<span class="pos-n">吏</span> <span class="pos-v">捕</span> 得之。</p><div class="source"><span>词性：n+v</span><span>角色：subject+predicate</span></div></div>
+              <div><div class="chart"><div class="bar" style="height:120px"></div><div class="bar" style="height:88px"></div><div class="bar" style="height:65px"></div><div class="bar" style="height:44px"></div></div><div class="bar-labels"><span>n+v</span><span>v+n</span><span>主宾</span><span>指称</span></div></div>
+            </div>
+            <div class="note" style="margin-top:14px;">UI 上先提供“结构模式选择器”。真正能否检索，取决于后台标注数据是否已拆分为 word、pos、role、start、end 等字段。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-admin">
+        <div class="screen-title">
+          <div><h3>六、后台上传与资料维护</h3><p>管理员用于上传文字、图片、标注版数据，并维护目录、页码和图文映射关系。</p></div>
+          <span class="tag">P0 后台</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/admin/materials</div></div>
+          <div class="app-content">
+            <div class="toolbar"><span class="chip dark">资料管理</span><span class="chip">图片管理</span><span class="chip">目录管理</span><span class="chip">标注管理</span><span class="chip">分类字典</span></div>
+            <div class="admin">
+              <aside class="form-card">
+                <h4 style="margin-top:0">新增 / 编辑条目</h4>
+                <div class="field"><label>简牍编号</label><div class="input">J-025</div></div>
+                <div class="field"><label>标题</label><div class="input">盗牛案</div></div>
+                <div class="field"><label>出土地点</label><div class="input">睡虎地</div></div>
+                <div class="field"><label>正文</label><div class="textarea">某甲盗牛，吏捕得之……</div></div>
+                <div class="field"><label>图片 / 标注文件</label><div class="input">选择文件上传</div></div>
+                <span class="chip dark">保存</span>
+              </aside>
+              <main class="table-card">
+                <h4 style="margin-top:0">资料列表</h4>
+                <table class="table">
+                  <thead><tr><th>编号</th><th>标题</th><th>地点</th><th>页码</th><th>图文状态</th><th>操作</th></tr></thead>
+                  <tbody>
+                    <tr><td>J-025</td><td>盗牛案</td><td>睡虎地</td><td>12</td><td><span class="status">已映射</span></td><td>编辑 / 校对</td></tr>
+                    <tr><td>J-026</td><td>讯狱案</td><td>张家山</td><td>31</td><td><span class="status warn">待校对</span></td><td>编辑 / 校对</td></tr>
+                    <tr><td>J-027</td><td>亡人案</td><td>里耶</td><td>45</td><td><span class="status">已映射</span></td><td>编辑 / 校对</td></tr>
+                  </tbody>
+                </table>
+              </main>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-ai">
+        <div class="screen-title">
+          <div><h3>七、AI 分析问答页</h3><p>第三阶段功能。UI 先保留入口，重点是“回答必须带出处”，避免无依据生成。</p></div>
+          <span class="tag">P2 预留</span>
+        </div>
+        <div class="mock-browser">
+          <div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="mock-url">/ai-analysis</div></div>
+          <div class="app-content">
+            <div class="ai-layout">
+              <section class="chat">
+                <div class="msg user">请统计“盗”相关法律案例中，主语为人名或身份称谓的例子。</div>
+                <div class="msg ai">已检索到 37 条相关材料，其中可识别主语标注的有 18 条。初步看，人名类主语 9 条，身份称谓类主语 6 条，其他 3 条。以下结论基于当前数据库已入库标注。</div>
+                <div class="toolbar" style="margin-top:120px"><div class="searchbar">输入分析问题，系统先检索资料再回答</div><span class="chip dark">发送</span></div>
+              </section>
+              <aside>
+                <div class="quote-card"><h5>引用资料 1</h5><p>简 J-025｜睡虎地秦简｜页 12｜命中“盗”</p></div>
+                <div class="quote-card"><h5>引用资料 2</h5><p>简 J-041｜张家山汉简｜页 31｜命中“盗”</p></div>
+                <div class="quote-card"><h5>系统规则</h5><p>未检索到充分材料时，回答应提示证据不足。</p></div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="components">
+        <div class="section-head"><div><h3>八、组件与视觉规范</h3><div class="section-desc">前端开发可按以下组件拆分，保证 UI 一致。</div></div></div>
+        <div class="grid-3">
+          <div class="tile"><span class="badge">颜色</span><h4>墨色 + 纸色 + 竹木色</h4><p>主文字 #201b16，背景 #f5f1e8，强调色 #8a5a2f，状态色少量使用。</p></div>
+          <div class="tile"><span class="badge">字体</span><h4>现代无衬线为主</h4><p>正文使用系统中文字体；释文区可在后续加入宋体/仿宋样式切换。</p></div>
+          <div class="tile"><span class="badge">布局</span><h4>左目录 + 中内容 + 右图像</h4><p>图文阅读固定三栏；检索与后台采用左筛选/表单、右结果/表格。</p></div>
+          <div class="tile"><span class="badge">组件</span><h4>SearchBar / FilterPanel</h4><p>用于全文检索、高级筛选、条件组合、命中数量展示。</p></div>
+          <div class="tile"><span class="badge">组件</span><h4>ReaderPanel / ImageViewer</h4><p>支持复制、仅文字、仅图片、图文并列、翻页、缩放、拖拽。</p></div>
+          <div class="tile"><span class="badge">组件</span><h4>AnnotationHighlighter</h4><p>按词性、语法角色、指称对象、关键词命中进行高亮。</p></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><h3>九、第二阶段 UI 交付顺序</h3><div class="section-desc">建议先定低保真，再做前端页面；不要一开始纠结复杂 AI 页面。</div></div></div>
+        <div class="flow">
+          <div class="flow-step"><h4>1. 页面确认</h4><p>确认 6 个页面是否覆盖本阶段。</p></div>
+          <div class="flow-step"><h4>2. 风格确认</h4><p>确认纸本、墨色、竹木色设计方向。</p></div>
+          <div class="flow-step"><h4>3. 前台开发</h4><p>先做首页、阅读页、检索页。</p></div>
+          <div class="flow-step"><h4>4. 后台开发</h4><p>做上传、编辑、目录和图文映射。</p></div>
+          <div class="flow-step"><h4>5. 调试优化</h4><p>处理响应式、窗口适配和交互细节。</p></div>
+        </div>
+      </section>
+      <div class="footer">UI Design Draft · 法律案例类出土简牍数据库平台 · 2026</div>
+    </main>
+  </div>
+</body>
+</html>
