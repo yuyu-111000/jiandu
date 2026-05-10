@@ -1,0 +1,293 @@
+/*
+ * ═══════════════════════════════════════════════════
+ * Anchor: Organic
+ * 大地色调 × 人文几何无衬线 × 16–32px 圆角 × SVG 颗粒纹理
+ *
+ * Why Organic for a bamboo-slip database:
+ * The safe pairing for a search tool is Swiss or Industrial — cold,
+ * rational, efficient. But unearthed manuscripts are earth, wood,
+ * excavation. An academic reading room, not a server room. Organic's
+ * terracotta-clay-sage palette and grain texture ground the UI in the
+ * material reality of two-thousand-year-old bamboo slips.
+ *
+ * Differentiator: Annotation highlights use exclusively earth-derived
+ * colours (sage= noun, clay= verb, ochre= keyword), making syntax look
+ * like archaeological strata rather than IDE syntax highlighting.
+ * ═══════════════════════════════════════════════════
+ */
+
+:root {
+  /* ====================================================
+     Palette — Organic anchor tokens
+     基底: sand / oat (explicitly NOT cream #F0+)
+     强调: terracotta / moss
+     黑色禁止出现纯黑 (#000), 只用暖墨色
+     ==================================================== */
+
+  --sand: #E8DCC7;
+  --oat: #D4B895;
+  --surface-light: #F2EADE;
+
+  --ink: #2B211A;
+  --muted: #7A6B5C;
+
+  --terracotta: #C66B3D;
+  --moss: #606C38;
+  --clay: #B08B6E;
+  --ochre: #C08E3A;
+  --seal: #8E3329;
+
+  --line: #D9CEBC;
+  --line-strong: #C4B5A0;
+
+  /* Functional aliases */
+  --bg: var(--sand);
+  --surface: var(--surface-light);
+  --surface-2: #EBE2D3;
+  --accent: var(--terracotta);
+  --accent-2: var(--moss);
+  --blue: #4A6B6B; /* links, AI badge — muted teal instead of cold blue */
+
+  /* ====================================================
+     Annotation palette — earth strata, not IDE highlight
+     ==================================================== */
+  --annot-noun-bg: #DAE5D0;
+  --annot-noun-line: var(--moss);
+  --annot-verb-bg: #ECD9C8;
+  --annot-verb-line: var(--terracotta);
+  --annot-subject-outline: rgba(142, 51, 41, 0.28);
+  --annot-keyword-bg: #F0DCB0;
+  --annot-keyword-line: var(--ochre);
+
+  /* ====================================================
+     Status — Organic requires no pure green / no pure red
+     ==================================================== */
+  --status-success-bg: #DAE5D0;
+  --status-success-text: #4A5C38;
+  --status-warn-bg: #FAEDE0;
+  --status-warn-text: var(--terracotta);
+
+  /* ====================================================
+     Radius — Organic range 16–32 px; none below 6 px
+     ==================================================== */
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 6px;
+  --radius-full: 999px;
+
+  /* ====================================================
+     Shadow — warm undertone, no cold greys
+     ==================================================== */
+  --shadow: 0 10px 30px rgba(80, 50, 30, 0.10);
+  --shadow-sm: 0 6px 18px rgba(80, 50, 30, 0.08);
+  --shadow-inset: inset 0 0 0 3px var(--surface-light);
+
+  /* ====================================================
+     Spacing
+     ==================================================== */
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 14px;
+  --space-lg: 20px;
+  --space-xl: 28px;
+  --space-2xl: 38px;
+
+  /* ====================================================
+     Layout
+     ==================================================== */
+  --sidebar: 260px;
+  --topbar: 70px;
+
+  /* ====================================================
+     Typography — warm geometric sans as Organic primary;
+     humanist serif (宋体) reserved for reading panel
+     ==================================================== */
+  --font: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  --font-serif: "Noto Serif CJK SC", "SimSun", "STSong", "Songti SC", serif;
+  --mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+
+  /* ====================================================
+     Fluid type scale — 1.25 ratio (web-designer standard)
+     ==================================================== */
+  --text-xs:  clamp(0.64rem, 0.61rem + 0.15vw, 0.72rem);
+  --text-sm:  clamp(0.80rem, 0.75rem + 0.24vw, 0.94rem);
+  --text-base: clamp(1.00rem, 0.91rem + 0.43vw, 1.25rem);
+  --text-lg:  clamp(1.25rem, 1.11rem + 0.68vw, 1.67rem);
+  --text-xl:  clamp(1.56rem, 1.36rem + 1.03vw, 2.22rem);
+  --text-2xl: clamp(1.95rem, 1.64rem + 1.56vw, 2.96rem);
+  --text-3xl: clamp(2.44rem, 1.97rem + 2.35vw, 3.95rem);
+
+  /* ====================================================
+     Fluid spacing scale (web-designer standard)
+     ==================================================== */
+  --space-3xs: clamp(0.25rem, 0.23rem + 0.11vw, 0.31rem);
+  --space-2xs: clamp(0.50rem, 0.46rem + 0.22vw, 0.63rem);
+  --space-s:   clamp(1.00rem, 0.91rem + 0.43vw, 1.25rem);
+  --space-m:   clamp(1.50rem, 1.37rem + 0.65vw, 1.88rem);
+  --space-l:   clamp(2.00rem, 1.83rem + 0.87vw, 2.50rem);
+  --space-2xl-f: clamp(4.00rem, 3.65rem + 1.74vw, 5.00rem);
+
+  /* ====================================================
+     Motion — Organic: gentle ease 300–500 ms;
+     respects reduced-motion (web-designer requirement)
+     ==================================================== */
+  --ease: 350ms ease;
+
+  /* ====================================================
+     Borders
+     ==================================================== */
+  --border: 1px solid var(--line);
+  --border-strong: 1px solid var(--line-strong);
+}
+
+/* ═══════════════════════════════════════════════════
+   Grain texture via SVG feTurbulence (1–3 % opacity)
+   — Organic requires grain; this is not an embellishment
+   ═══════════════════════════════════════════════════ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.023;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════════════
+   Reset
+   ═══════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   Shared utility classes
+   ═══════════════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tile {
+  padding: 18px;
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  transition: box-shadow var(--ease);
+}
+
+.tile:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.section {
+  margin: 30px 0 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 20px;
+}
+
+.section-head h3 {
+  font-size: var(--text-2xl);
+  margin: 0;
+}
+
+.section-desc {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  background: var(--accent);
+  display: block;
+}
+
+.note {
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent);
+  background: #F5EDE2;
+  color: #554A40;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px;
+}
+
+/* ═══════════════════════════════════════════════════
+   Annotation highlights — earth-strata palette
+   ═══════════════════════════════════════════════════ */
+.pos-n {
+  background: var(--annot-noun-bg);
+  border-bottom: 2px solid var(--annot-noun-line);
+  padding: 1px 3px;
+  border-radius: var(--radius-xs);
+}
+
+.pos-v {
+  background: var(--annot-verb-bg);
+  border-bottom: 2px solid var(--annot-verb-line);
+  padding: 1px 3px;
+  border-radius: var(--radius-xs);
+}
+
+.role-s {
+  outline: 2px solid var(--annot-subject-outline);
+  border-radius: var(--radius-xs);
+}
+
+.mark {
+  background: var(--annot-keyword-bg);
+  border-bottom: 2px solid var(--annot-keyword-line);
+  padding: 0 2px;
+  border-radius: 3px;
+}
